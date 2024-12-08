@@ -1,0 +1,10 @@
+#!/bin/bash
+
+sudo su
+
+yum install httpd -y
+systemctl start httpd.service
+systemctl enable httpd.service
+chkconfig httpd on
+
+echo "<html> <body> Hi this is second server </body> </html>" >> /var/www/html/index.html
