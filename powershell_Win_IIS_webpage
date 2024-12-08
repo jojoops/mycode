@@ -1,0 +1,33 @@
+<powershell>
+# Enable IIS Feature
+Install-WindowsFeature -name Web-Server -IncludeManagementTools
+
+# Set up a simple webpage
+$webContent = @"
+<html>
+    <head>
+        <title>Welcome to My Web Server</title>
+    </head>
+    <body>
+        <h1>Hello, World!</h1>
+        <p>This is a default webpage served from an AWS EC2 Windows Server 2016 instance.</p>
+    </body>
+</html>
+"@
+
+# Save the content to the default IIS directory
+$webPath = "C:\inetpub\wwwroot\index.html"
+Set-Content -Path $webPath -Value $webContent -Force
+
+# Start IIS service
+Start-Service W3SVC
+
+# Enable the service to start automatically on boot
+Set-Service -Name W3SVC -StartupType Automatic
+
+# Allow HTTP traffic through Windows Firewall
+New-NetFirewallRule -DisplayName "Allow HTTP" -Direction Inbound -Protocol TCP -LocalPort 80 -Action Allow
+
+# Output to log for debugging
+Write-Output "IIS installed and webpage created" > C:\setup_log.txt
+</powershell>
